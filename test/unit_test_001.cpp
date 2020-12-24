@@ -56,12 +56,14 @@ unittest(test_new_operator)
 
 unittest(test_constructor)
 {
-  float diceValues[] = { 1.5, 2.5, 3.5, 4.5, 5.5 };
-  Histogram hist(5, diceValues);
-  assertEqual(6, hist.size());
+  fprintf(stderr, "VERSION: %s\n", HISTOGRAM_LIB_VERSION);
+
+  float diceValues[] = {0.5, 1.5, 2.5, 3.5, 4.5, 5.5 };
+  Histogram hist(7, diceValues);
+  assertEqual(7, hist.size());
   assertEqual(0, hist.count());
   
-  for (int i = 0; i < 6; i++)
+  for (int i = 0; i < 7; i++)
   {
     assertEqual(0, hist.bucket(i));
   }
@@ -69,27 +71,28 @@ unittest(test_constructor)
 
 unittest(test_dice)
 {
-  float diceValues[] = { 1.5, 2.5, 3.5, 4.5, 5.5 };
-  Histogram hist(5, diceValues);
+  float diceValues[] = { 0.5, 1.5, 2.5, 3.5, 4.5, 5.5 };
+  Histogram hist(7, diceValues);
   
   for (int d = 0; d < 70; d++)
   {
     hist.add( d % 7 ); // simulate dice 
   }
   
-  assertEqual(6, hist.size());
-  assertEqual(100, hist.count());
+  assertEqual(7, hist.size());
+  assertEqual(70, hist.count());
   
-  for (int i = 0; i < 6; i++)
+  for (int i = 0; i < 7; i++)
   {
+    fprintf(stderr, "%d\t", i);
     assertEqual(10, hist.bucket(i));
   }
   
   hist.clear();
-  assertEqual(6, hist.size());
+  assertEqual(7, hist.size());
   assertEqual(0, hist.count());
   
-  for (int i = 0; i < 6; i++)
+  for (int i = 0; i < 7; i++)
   {
     assertEqual(0, hist.bucket(i));
   }
