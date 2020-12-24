@@ -29,7 +29,7 @@
 
 
 #include "Arduino.h"
-#include "Histogram.h"
+#include "histogram.h"
 
 
 
