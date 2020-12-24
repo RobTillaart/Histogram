@@ -97,6 +97,7 @@ unittest(test_dice)
   
   for (int i = 0; i < 7; i++)
   {
+    fprintf(stderr, "%d\t", i);
     assertEqual(0, hist.bucket(i));
   }
 }
