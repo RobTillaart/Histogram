@@ -11,131 +11,155 @@
 //  0.1.2   2012-12-23  changed float to double; some comments
 //  0.1.3   2013-09-29  testing a lot & refactoring
 //  0.1.4   2015-03-06  stricter interface
-//  0.1.5   2017-07-16  refactor, support for > 256 buckets; prevent alloc errors
+//  0.1.5   2017-07-16  refactor, support for > 256 buckets; prevent alloc() errors
 //  0.1.6   2017-07-27  revert double to float (issue #33)
 //  0.2.0   2020-06-12  #pragma once, removed pre 1.0 support
-//  0.2.1   2020-12-24  arduino-ci + unit tests
+//  0.2.1   2020-12-24  Arduino-CI + unit tests
+//  0.3.0   2021-11-02  update build-CI, add badges
+//                      refactor readability
+//                      
 
 
 #include "histogram.h"
 
-Histogram::Histogram(const int16_t len, float *bounds)
+
+Histogram::Histogram(const int16_t length, float *bounds)
 {
   _bounds = bounds;
-  _len = len + 1;
-  _data = (int32_t *) malloc((_len) * sizeof(int32_t));
+  _length = length + 1;
+  _data = (int32_t *) malloc((_length) * sizeof(int32_t));
   if (_data) clear();
-  else _len = 0;
-  _cnt = 0;
+  else _length = 0;
+  _count = 0;
 }
+
 
 Histogram::~Histogram()
 {
   if (_data) free(_data);
 }
 
+
 // resets all counters
 void Histogram::clear()
 {
-  for (int16_t i = 0; i < _len; i++) _data[i] = 0;
-  _cnt = 0;
+  for (int16_t i = 0; i < _length; i++) _data[i] = 0;
+  _count = 0;
 }
+
 
 // adds a new value to the histogram - increasing
-void Histogram::add(const float f)
+void Histogram::add(const float value)
 {
-  if (_len > 0)
+  if (_length > 0)
   {
-    _data[find(f)]++;
-    _cnt++;
+    int16_t index = find(value);
+    _data[index]++;
+    _count++;
   }
 }
+
 
 // adds a new value to the histogram - decreasing
-void Histogram::sub(const float f)
+void Histogram::sub(const float value)
 {
-  if (_len > 0)
+  if (_length > 0)
   {
-    _data[find(f)]--;
-    _cnt++;
+    int16_t index = find(value);
+    _data[index]--;
+    _count++;
   }
 }
 
+
 // returns the count of a bucket
-int32_t Histogram::bucket(const int16_t idx)
+int32_t Histogram::bucket(const int16_t index)
 {
-  if (idx > _len) return 0;
-  return _data[idx];
+  if (index > _length) return 0;
+  return _data[index];
 }
+
 
 // returns the relative frequency of a bucket
-float Histogram::frequency(const int16_t idx)
+float Histogram::frequency(const int16_t index)
 {
-  if (_cnt == 0 || _len == 0) return NAN;
+  if (_count == 0 || _length == 0) return NAN;
 
-  if (idx > _len) return 0;   // diff with PMF
-  return (1.0 * _data[idx]) / _cnt;
+  if (index > _length) return 0;   // diff with PMF
+  return (1.0 * _data[index]) / _count;
 }
+
 
 // EXPERIMENTAL
 // returns the probability of the bucket of a value
-float Histogram::PMF(const float val)
+float Histogram::PMF(const float value)
 {
-  if (_cnt == 0 || _len == 0) return NAN;
+  if (_count == 0 || _length == 0) return NAN;
 
-  int16_t idx = find(val);
-  return (1.0 * _data[idx]) / _cnt;
+  int16_t index = find(value);
+  return (1.0 * _data[index]) / _count;
 }
+
 
 // EXPERIMENTAL
 // returns the cummulative probability of
 // values <= value
-float Histogram::CDF(const float val)
+float Histogram::CDF(const float value)
 {
-  if (_cnt == 0 || _len == 0) return NAN;
+  if (_count == 0 || _length == 0) return NAN;
 
-  int16_t idx = find(val);
+  int16_t index = find(value);
   int32_t sum = 0;
-  for (int16_t i = 0; i <= idx; i++)
+  for (int16_t i = 0; i <= index; i++)
   {
     sum += _data[i];
   }
-  return (1.0 * sum) / _cnt;
+  return (1.0 * sum) / _count;
 }
+
 
 // EXPERIMENTAL
 // returns the value of the original array for
 // which the CDF is at least prob.
 float Histogram::VAL(const float prob)
 {
-  if (_cnt == 0 || _len == 0) return NAN;
+  if (_count == 0 || _length == 0) return NAN;
   float p = prob;
   if (p < 0.0) p = 0.0;
   if (p > 1.0) p = 1.0;
 
-  float probability = p * _cnt;
+  float probability = p * _count;
   int32_t sum = 0;
-  for (int16_t i = 0; i < _len; i++)
+  for (int16_t i = 0; i < _length; i++)
   {
     sum += _data[i];
-    if (sum >= probability && (i <(_len-1)) ) return _bounds[i];
+    if (sum >= probability && (i < (_length - 1)) )
+    {
+      return _bounds[i];
+    }
   }
   return INFINITY;
 }
 
-// returns the bucket number for value val
-int16_t Histogram::find(const float val)
-{
-  if (_len <= 0) return -1;
 
-  for (int16_t i = 0; i < (_len-1); i++)
+// returns the bucket number for value
+int16_t Histogram::find(const float value)
+{
+  if (_length <= 0) return -1;
+
+  for (int16_t i = 0; i < (_length - 1); i++)
   {
-    if (_bounds[i] >= val) return i;
+    if (_bounds[i] >= value)
+    {
+      return i;
+    }
   }
-  return _len-1;  // len?
+  return _length - 1;  // len?
   // int16_t i = 0;
-  // while ((i < (_len-1)) && (_bounds[i] < val)) i++;
+  // while ((i < (_length - 1)) && (_bounds[i] < value)) i++;
   // return i;
 }
 
+
 // -- END OF FILE --
+

@@ -16,6 +16,7 @@ float b[] = {
 
 Histogram hist(16, b);
 
+
 void setup()
 {
   Serial.begin(115200);
@@ -23,6 +24,7 @@ void setup()
   Serial.print("Histogram version: ");
   Serial.println(HISTOGRAM_LIB_VERSION);
 }
+
 
 void loop()
 {
@@ -40,7 +42,7 @@ void loop()
   
   float sum = 0;
   int i = 0;
-  for (i = 0; i< hist.size(); i++)
+  for (i = 0; i < hist.size(); i++)
   {
     sum += hist.frequency(i);
     Serial.print(sum, 2);
@@ -55,4 +57,5 @@ void loop()
   delay(10);
 }
 
-// END OF FILE
+
+// -- END OF FILE --

@@ -1,11 +1,15 @@
 
 [![Arduino CI](https://github.com/RobTillaart/Histogram/workflows/Arduino%20CI/badge.svg)](https://github.com/marketplace/actions/arduino_ci)
+[![Arduino-lint](https://github.com/RobTillaart/Histogram/actions/workflows/arduino-lint.yml/badge.svg)](https://github.com/RobTillaart/Histogram/actions/workflows/arduino-lint.yml)
+[![JSON check](https://github.com/RobTillaart/Histogram/actions/workflows/jsoncheck.yml/badge.svg)](https://github.com/RobTillaart/Histogram/actions/workflows/jsoncheck.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/RobTillaart/Histogram/blob/master/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/RobTillaart/Histogram.svg?maxAge=3600)](https://github.com/RobTillaart/Histogram/releases)
+
 
 # Histogram
 
 Arduino library for creating histograms math.
+
 
 ## Description
 
@@ -18,12 +22,14 @@ The Histogram distributes the values added to it into buckets and keeps count.
 If you need more quantitative analysis, you might need the statistics library, 
 a- https://github.com/RobTillaart/Statistic
 
+
 ## Interface 
 
 ### Constructor
 
-- **Histogram(uint8_t len, float \*bounds)** constructor, get an array of boundary values and array length
+- **Histogram(uint8_t length, float \*bounds)** constructor, get an array of boundary values and array length
 - **~Histogram()** destructor
+
 
 ### Base
 
@@ -31,7 +37,7 @@ a- https://github.com/RobTillaart/Statistic
 - **void add(float val)** add a value, increase count of bucket
 - **void sub(float val)** 'add' a value, but decrease count
 - **uint8_t size()** number of buckets
-- **unsigned long count()** total number of values added
+- **uint32_t count()** total number of values added
 - **long bucket(uint8_t idx)** count of single bucket, can be negative due to **sub()**
 - **float frequency(uint8_t idx)** the relative frequency of a bucket
 - **uint8_t find(float f)** find the bucket for value f
@@ -56,6 +62,7 @@ each other out (more or less), and the value of all buckets should be around 0. 
 The **frequency()** function may be removed to reduce footprint as it can be calculated with
 the formula **(1.0 \* bucket(i))/count()**.
 
+
 ### Experimental
 
 - **float PMF(float val)** Probability Mass Function
@@ -70,7 +77,13 @@ There are three experimental functions:
 As the Arduino typical uses a small number of buckets these functions are quite 
 coarse/inaccurate (linear interpolation within bucket is still to be investigated)
 
-## Todo list
+
+## Operation
+
+See examples
+
+
+## Future
 
 - Copy the boundaries array?
 - Additional values per bucket.
@@ -84,7 +97,4 @@ coarse/inaccurate (linear interpolation within bucket is still to be investigate
 - bucket full / overflow warning.
 - make github issues of the above...
 
-## Operation
-
-See examples
 
