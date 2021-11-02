@@ -19,7 +19,7 @@ public:
   Histogram(const int16_t length, float *bounds);
   ~Histogram();
 
-  void  clear();
+  void  clear(int32_t value = 0);
   void  add(const float value);
   void  sub(const float value);
 
@@ -36,7 +36,8 @@ public:
   float   PMF(const float value);
   float   CDF(const float value);
   float   VAL(const float prob);
-  int16_t find(const float f);
+
+  int16_t find(const float value);
 
 protected:
   float *   _bounds;

@@ -1,7 +1,7 @@
 //
 //    FILE: Histogram.cpp
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.2.1
+// VERSION: 0.3.0
 // PURPOSE: Histogram library for Arduino
 //    DATE: 2012-11-10
 //
@@ -17,7 +17,7 @@
 //  0.2.1   2020-12-24  Arduino-CI + unit tests
 //  0.3.0   2021-11-02  update build-CI, add badges
 //                      refactor readability
-//                      
+//                      add parameter for clear(value = 0)
 
 
 #include "histogram.h"
@@ -40,10 +40,10 @@ Histogram::~Histogram()
 }
 
 
-// resets all counters
-void Histogram::clear()
+// resets all counters to value (default 0)
+void Histogram::clear(int32_t value)
 {
-  for (int16_t i = 0; i < _length; i++) _data[i] = 0;
+  for (int16_t i = 0; i < _length; i++) _data[i] = value;
   _count = 0;
 }
 
@@ -57,6 +57,7 @@ void Histogram::add(const float value)
     _data[index]++;
     _count++;
   }
+  // could return index or count.
 }
 
 
@@ -69,6 +70,7 @@ void Histogram::sub(const float value)
     _data[index]--;
     _count++;
   }
+  // could return index or count.
 }
 
 
@@ -83,9 +85,9 @@ int32_t Histogram::bucket(const int16_t index)
 // returns the relative frequency of a bucket
 float Histogram::frequency(const int16_t index)
 {
-  if (_count == 0 || _length == 0) return NAN;
+  if ((_count == 0) || (_length == 0)) return NAN;
 
-  if (index > _length) return 0;   // diff with PMF
+  if (index > _length) return 0;   // differs from PMF()
   return (1.0 * _data[index]) / _count;
 }
 
@@ -94,7 +96,7 @@ float Histogram::frequency(const int16_t index)
 // returns the probability of the bucket of a value
 float Histogram::PMF(const float value)
 {
-  if (_count == 0 || _length == 0) return NAN;
+  if ((_count == 0) || (_length == 0)) return NAN;
 
   int16_t index = find(value);
   return (1.0 * _data[index]) / _count;
@@ -102,11 +104,11 @@ float Histogram::PMF(const float value)
 
 
 // EXPERIMENTAL
-// returns the cummulative probability of
+// returns the cumulative probability of
 // values <= value
 float Histogram::CDF(const float value)
 {
-  if (_count == 0 || _length == 0) return NAN;
+  if ((_count == 0) || (_length == 0)) return NAN;
 
   int16_t index = find(value);
   int32_t sum = 0;
@@ -120,10 +122,11 @@ float Histogram::CDF(const float value)
 
 // EXPERIMENTAL
 // returns the value of the original array for
-// which the CDF is at least prob.
+// which the CDF is at least prob(ability).
 float Histogram::VAL(const float prob)
 {
-  if (_count == 0 || _length == 0) return NAN;
+  if ((_count == 0) || (_length == 0)) return NAN;
+
   float p = prob;
   if (p < 0.0) p = 0.0;
   if (p > 1.0) p = 1.0;

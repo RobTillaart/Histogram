@@ -27,20 +27,20 @@ a- https://github.com/RobTillaart/Statistic
 
 ### Constructor
 
-- **Histogram(uint8_t length, float \*bounds)** constructor, get an array of boundary values and array length
-- **~Histogram()** destructor
+- **Histogram(uint8_t length, float \*bounds)** constructor, get an array of boundary values and array length.
+- **~Histogram()** destructor.
 
 
 ### Base
 
-- **void clear()** reset all counters
-- **void add(float val)** add a value, increase count of bucket
-- **void sub(float val)** 'add' a value, but decrease count
-- **uint8_t size()** number of buckets
-- **uint32_t count()** total number of values added
-- **long bucket(uint8_t idx)** count of single bucket, can be negative due to **sub()**
-- **float frequency(uint8_t idx)** the relative frequency of a bucket
-- **uint8_t find(float f)** find the bucket for value f
+- **void clear(float value = 0)** reset all bucket counters to value (default 0).
+- **void add(float value)** add a value, increase count of bucket.
+- **void sub(float value)** 'add' a value, but decrease count (subtract).
+- **uint8_t size()** number of buckets.
+- **uint32_t count()** total number of values added.
+- **int32_t bucket(uint8_t index)** returns the count of single bucket, can be negative due to **sub()**
+- **float frequency(uint8_t index)** returns the relative frequency of a bucket, always between 0.0 and 1.0.
+- **uint8_t find(float value)** returns the index of the bucket for value.
 
 When the class is initialized an array of the boundaries to define the borders of the
 buckets is passed to the constructor. This array should be declared global as the
@@ -63,19 +63,19 @@ The **frequency()** function may be removed to reduce footprint as it can be cal
 the formula **(1.0 \* bucket(i))/count()**.
 
 
-### Experimental
+### Probability Distribution Functions
 
-- **float PMF(float val)** Probability Mass Function
-- **float CDF(float val)** Cumulative Distribution Function
-- **float VAL(float prob)** Value Function
+There are three (experimental) functions:
 
-There are three experimental functions:
-- **PMF()** is quite similar to frequency, but uses a value as parameter.
-- **CDF()** gives the sum of frequencies <= value.
-- **VAL()** is **CDF()** inverted.
+- **float PMF(float value)** Probability Mass Function. Quite similar to **frequency()**, but uses a value as parameter.
+- **float CDF(float value)** Cumulative Distribution Function. Returns the sum of frequencies <= value. Always between 0.0 and 1.0.
+- **float VAL(float prob)** Value Function, is **CDF()** inverted. 
+Returns the value of the original array for which the CDF is at least probability.
 
 As the Arduino typical uses a small number of buckets these functions are quite 
-coarse/inaccurate (linear interpolation within bucket is still to be investigated)
+coarse and/or inaccurate (linear interpolation within bucket is still to be investigated)
+
+Note **PDF()** is a continuous function and therefore not applicable in discrete histogram.
 
 
 ## Operation
@@ -85,16 +85,18 @@ See examples
 
 ## Future
 
+- improve strategy for **find()** the right bucket. Binary search?
+- investigate linear interpolation for **PMF()**, **CDF()** and **VAL()** functions to improve accuracy.
+- explain **PMF()**, **CDF()** and **VAL()** functions
+
+
 - Copy the boundaries array?
 - Additional values per bucket.
   - Sum, Min, Max, (average can be derived)
 - separate bucket-array for sub()
-- improve strategy for **find()** the right bucket..
-- investigate linear interpolation for **PMF()**, **CDF()** and **VAL()** functions to improve accuracy.
-- explain **PMF()**, **CDF()** and **VAL()** functions
-- clear individual buckets
+- clear individual buckets ?
 - merge buckets
 - bucket full / overflow warning.
-- make github issues of the above...
+
 
 
