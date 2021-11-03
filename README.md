@@ -25,6 +25,7 @@ a- https://github.com/RobTillaart/Statistic
 
 ## Interface 
 
+
 ### Constructor
 
 - **Histogram(uint8_t length, float \*bounds)** constructor, get an array of boundary values and array length.
@@ -37,10 +38,9 @@ a- https://github.com/RobTillaart/Statistic
 - **void add(float value)** add a value, increase count of bucket.
 - **void sub(float value)** 'add' a value, but decrease count (subtract).
 - **uint8_t size()** number of buckets.
-- **uint32_t count()** total number of values added.
+- **uint32_t count()** total number of values added (or subtracted).
 - **int32_t bucket(uint8_t index)** returns the count of single bucket, can be negative due to **sub()**
 - **float frequency(uint8_t index)** returns the relative frequency of a bucket, always between 0.0 and 1.0.
-- **uint8_t find(float value)** returns the index of the bucket for value.
 
 When the class is initialized an array of the boundaries to define the borders of the
 buckets is passed to the constructor. This array should be declared global as the
@@ -63,12 +63,23 @@ The **frequency()** function may be removed to reduce footprint as it can be cal
 the formula **(1.0 \* bucket(i))/count()**.
 
 
+### Helpers
+
+- **int16_t find(float value)** returns the index of the bucket for value.
+- **int16_t findMin()** returns the (first) index of the bucket with the minimum value.
+- **int16_t findMax()** returns the (first) index of the bucket with the maximum value.
+- **int16_t countAbove(uint32_t level)** returns the number of buckets above level.
+- **int16_t countBelow(uint32_t level)** returns the number of buckets below level.
+
+
 ### Probability Distribution Functions
 
-There are three (experimental) functions:
+There are three functions:
 
-- **float PMF(float value)** Probability Mass Function. Quite similar to **frequency()**, but uses a value as parameter.
-- **float CDF(float value)** Cumulative Distribution Function. Returns the sum of frequencies <= value. Always between 0.0 and 1.0.
+- **float PMF(float value)** Probability Mass Function. Quite similar to **frequency()**, 
+but uses a value as parameter.
+- **float CDF(float value)** Cumulative Distribution Function. 
+Returns the sum of frequencies <= value. Always between 0.0 and 1.0.
 - **float VAL(float prob)** Value Function, is **CDF()** inverted. 
 Returns the value of the original array for which the CDF is at least probability.
 
@@ -85,18 +96,43 @@ See examples
 
 ## Future
 
+
 - improve strategy for **find()** the right bucket. Binary search?
 - investigate linear interpolation for **PMF()**, **CDF()** and **VAL()** functions to improve accuracy.
-- explain **PMF()**, **CDF()** and **VAL()** functions
-
-
+- improve documentation
+  - explain **PMF()**, **CDF()** and **VAL()** functions
 - Copy the boundaries array?
+- merge buckets
+- examples for new functions.
+- bucket full / overflow warning. The **add()** **sub()** should 
+return a bool to indicate that a bucket is (almost) full.
+- 2D histograms ? e.g. positions on a grid.
+
+#### idea: Histogram8 Histogram 16
+
+Histogram8 and Histogram16 class with similar interface but smaller 
+number of buckets size etc. Current version can count up to ±2^31 while
+often ±2^15 or even ±2^7 is sufficient. Could safe substantial memory.
+
+| class name  | length | count/bucket | memory |
+|:------------|-------:|-------------:|-------:|
+| Histogram   | 32766  | ±2147483647  | 130 KB |
+| Histogram8  | 254    | ±127         | 260 B  |
+| Histogram16 | 254    | ±32767       | 520 B  |
+
+The essential difference would be the **\_data** array, to reduce 
+the memory footprint. So could be rather easy. 
+
+Performance optimizations are possible too however not essential for 
+the first versions I assume. 
+
+
+#### expensive ideas
+
+Expensive ideas in terms of memory or performance
+
 - Additional values per bucket.
   - Sum, Min, Max, (average can be derived)
 - separate bucket-array for sub()
-- clear individual buckets ?
-- merge buckets
-- bucket full / overflow warning.
-
 
 

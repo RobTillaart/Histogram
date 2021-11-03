@@ -18,7 +18,9 @@
 //  0.3.0   2021-11-02  update build-CI, add badges
 //                      refactor readability
 //                      add parameter for clear(value = 0)
-
+//                      add findMin(), findMax()
+//                      add countAbove(), countBelow().
+//                      add setBucket(),
 
 #include "histogram.h"
 
@@ -145,6 +147,31 @@ float Histogram::VAL(const float prob)
 }
 
 
+// returns the bucket number for value 
+// - binary search, more memory ;  faster
+// int16_t Histogram::find(const float value)
+// {
+  // if (_length <= 0) return -1;
+
+  // int16_t low = 0, high = _length;
+  // int16_t mid;
+  // while (high - low > 1)
+  // {
+    // mid = (low + high)/2;
+    // if (_bounds[mid] > value)
+    // {
+      // high = mid;
+    // }
+    // else
+    // {
+      // low = mid;
+    // }
+  // }
+  // if (_bounds[mid] > value) return mid;
+  // return _length - 1;
+// }
+
+
 // returns the bucket number for value
 int16_t Histogram::find(const float value)
 {
@@ -157,10 +184,66 @@ int16_t Histogram::find(const float value)
       return i;
     }
   }
-  return _length - 1;  // len?
+  return _length - 1;
   // int16_t i = 0;
   // while ((i < (_length - 1)) && (_bounds[i] < value)) i++;
   // return i;
+}
+
+
+// returns the (first) index of the bucket with minimum value.
+int16_t Histogram::findMin()
+{
+  if (_length <= 0) return -1;
+
+  int16_t index = 0;
+  for (int16_t i = 1; i < (_length - 1); i++)
+  {
+    if (_data[i] < _data[index]) index = i;
+  }
+  return index;
+}
+
+
+// returns the (first) index of the bucket with maximum value.
+int16_t Histogram::findMax()
+{
+  if (_length <= 0) return -1;
+
+  int16_t index = 0;
+  for (int16_t i = 1; i < (_length - 1); i++)
+  {
+    if (_data[i] > _data[index]) index = i;
+  }
+  return index;
+}
+
+
+// returns the number of buckets above a certain level.
+int16_t Histogram::countAbove(const uint32_t level)
+{
+  if (_length <= 0) return -1;
+
+  int32_t count = 0;
+  for (int16_t i = 0; i < (_length - 1); i++)
+  {
+    if (_data[i] > level) count++;
+  }
+  return count;
+}
+
+
+// returns the number of buckets below a certain level.
+int16_t Histogram::countBelow(const uint32_t level)
+{
+  if (_length <= 0) return -1;
+
+  int32_t count = 0;
+  for (int16_t i = 0; i < (_length - 1); i++)
+  {
+    if (_data[i] < level) count++;
+  }
+  return count;
 }
 
 
