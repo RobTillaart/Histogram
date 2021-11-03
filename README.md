@@ -23,6 +23,31 @@ If you need more quantitative analysis, you might need the statistics library,
 a- https://github.com/RobTillaart/Statistic
 
 
+#### working
+
+When the class is initialized an array of the boundaries to define the borders of the
+buckets is passed to the constructor. This array should be declared global as the
+Histogram class does not copy the values to keep memory usage low. This allows to change
+the boundaries runtime, so after a **clear()**, a new Histogram can be created.
+
+The values in the boundary array do not need to be equidistant (equal in size)
+but they need to be in ascending order.
+
+Internally the library does not record the individual values, only the count per bucket.
+If a new value is added - **add()** or **sub()** - the class checks in which bucket it 
+belongs and the buckets counter is increased.
+
+The **sub()** function is used to decrease the count of a bucket and it can cause the 
+count to become below zero. Although seldom used but still depending on the application 
+it can be useful. E.g. when you want to compare two value generating streams, you let 
+one stream **add()** and the other **sub()**. If the histogram of both streams is 
+similar they should cancel each other out (more or less), and the value of all buckets 
+should be around 0. \[not tried\].
+
+The **frequency()** function may be removed to reduce footprint as it can be calculated 
+with the formula **(1.0 \* bucket(i))/count()**.
+
+
 ## Interface 
 
 
@@ -42,28 +67,8 @@ a- https://github.com/RobTillaart/Statistic
 - **int32_t bucket(uint8_t index)** returns the count of single bucket, can be negative due to **sub()**
 - **float frequency(uint8_t index)** returns the relative frequency of a bucket, always between 0.0 and 1.0.
 
-When the class is initialized an array of the boundaries to define the borders of the
-buckets is passed to the constructor. This array should be declared global as the
-Histogram class does not copy the values to keep memory usage low. This allows to change
-the boundaries runtime, so after a **clear()**, a new Histogram can be created.
 
-The values in the boundary array do not need to be equidistant (equal in size).
-
-Internally the library does not record the individual values, only the count per bucket.
-If a new value is added - **add()** or **sub()** - the class checks in which bucket it belongs
-and the buckets counter is increased.
-
-The **sub()** function is used to decrease the count of a bucket and it can cause the count
-to become below zero. ALthough seldom used but still depending on the application it can
-be useful. E.g. when you want to compare two value generating streams, you let one stream
-**add()** and the other **sub()**. If the histogram of both streams is similar they should cancel 
-each other out (more or less), and the value of all buckets should be around 0. \[not tried\].
-
-The **frequency()** function may be removed to reduce footprint as it can be calculated with
-the formula **(1.0 \* bucket(i))/count()**.
-
-
-### Helpers
+### Helper functions
 
 - **int16_t find(float value)** returns the index of the bucket for value.
 - **int16_t findMin()** returns the (first) index of the bucket with the minimum value.
@@ -96,17 +101,19 @@ See examples
 
 ## Future
 
-
-- improve strategy for **find()** the right bucket. Binary search?
-- investigate linear interpolation for **PMF()**, **CDF()** and **VAL()** functions to improve accuracy.
+- improve strategy for **find()** the right bucket. 
+Binary search is faster but need more testing.
+- investigate linear interpolation for **PMF()**, **CDF()** and **VAL()** functions to 
+improve accuracy.
 - improve documentation
-  - explain **PMF()**, **CDF()** and **VAL()** functions
+  - explain **PMF()**, **CDF()** and **VAL()** functions.
 - Copy the boundaries array?
 - merge buckets
 - examples for new functions.
 - bucket full / overflow warning. The **add()** **sub()** should 
 return a bool to indicate that a bucket is (almost) full.
 - 2D histograms ? e.g. positions on a grid.
+
 
 #### idea: Histogram8 Histogram 16
 
