@@ -20,7 +20,7 @@ measurements. This is where this Histogram library comes in.
 The Histogram distributes the values added to it into buckets and keeps count.
 
 If you need more quantitative analysis, you might need the statistics library, 
-a- https://github.com/RobTillaart/Statistic
+- https://github.com/RobTillaart/Statistic
 
 
 #### working
@@ -53,7 +53,7 @@ with the formula **(1.0 \* bucket(i))/count()**.
 
 ### Constructor
 
-- **Histogram(uint8_t length, float \*bounds)** constructor, get an array of boundary values and array length.
+- **Histogram(uint16_t length, float \*bounds)** constructor, get an array of boundary values and array length. Length should be less than 65534.
 - **~Histogram()** destructor.
 
 
@@ -62,20 +62,20 @@ with the formula **(1.0 \* bucket(i))/count()**.
 - **void clear(float value = 0)** reset all bucket counters to value (default 0).
 - **void add(float value)** add a value, increase count of bucket.
 - **void sub(float value)** 'add' a value, but decrease count (subtract).
-- **uint8_t size()** number of buckets.
-- **uint32_t count()** total number of values added (or subtracted).
-- **int32_t bucket(uint8_t index)** returns the count of single bucket, can be negative due to **sub()**
-- **float frequency(uint8_t index)** returns the relative frequency of a bucket, always between 0.0 and 1.0.
+- **uint16_t size()** returns number of buckets.
+- **uint32_t count()** returns total number of values added (or subtracted).
+- **int32_t bucket(uint16_t index)** returns the count of single bucket, can be negative due to **sub()**
+- **float frequency(uint16_t index)** returns the relative frequency of a bucket, always between 0.0 and 1.0.
 
 
 ### Helper functions
 
-- **int16_t find(float value)** returns the index of the bucket for value.
-- **int16_t findMin()** returns the (first) index of the bucket with the minimum value.
-- **int16_t findMax()** returns the (first) index of the bucket with the maximum value.
-- **int16_t countLevel(int32_t level)** returns the number of buckets with exact that level (count).
-- **int16_t countAbove(int32_t level)** returns the number of buckets above level.
-- **int16_t countBelow(int32_t level)** returns the number of buckets below level.
+- **uint16_t find(float value)** returns the index of the bucket for value.
+- **uint16_t findMin()** returns the (first) index of the bucket with the minimum value.
+- **uint16_t findMax()** returns the (first) index of the bucket with the maximum value.
+- **uint16_t countLevel(int32_t level)** returns the number of buckets with exact that level (count).
+- **uint16_t countAbove(int32_t level)** returns the number of buckets above level.
+- **uint16_t countBelow(int32_t level)** returns the number of buckets below level.
 
 
 ### Probability Distribution Functions
@@ -102,18 +102,16 @@ See examples
 
 ## Future
 
-- improve strategy for **find()** the right bucket. 
-Binary search is faster but need more testing.
-- investigate linear interpolation for **PMF()**, **CDF()** and **VAL()** functions to 
-improve accuracy.
+- performance - **find()** the right bucket. Binary search is faster - need testing.
+- improve accuracy - linear interpolation for **PMF()**, **CDF()** and **VAL()**
+- performance - merge loops in **PMF()**
+- performance - reverse loops - compare to zero.
 - improve documentation
   - explain **PMF()**, **CDF()** and **VAL()** functions.
-- Copy the boundaries array?
-- merge buckets
-- examples for new functions.
 - bucket full / overflow warning. The **add()** **sub()** should 
 return a bool to indicate that a bucket is (almost) full.
 - 2D histograms ? e.g. positions on a grid.
+
 
 
 #### idea: Histogram8 Histogram 16
@@ -142,5 +140,6 @@ Expensive ideas in terms of memory or performance
 - Additional values per bucket.
   - Sum, Min, Max, (average can be derived)
 - separate bucket-array for sub()
+- Copy the boundaries array?
 
 
