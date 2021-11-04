@@ -270,20 +270,7 @@ Histogram16::Histogram16(const uint16_t length, float *bounds) : Histogram(lengt
 };
 
 
-Histogram16::~Histogram16() : ~Histogram()
-{
-};
-
-
-//////////////////////////////////////////////////////////////
-
-
 Histogram8::Histogram8(const uint16_t length, float *bounds) : Histogram(length, bounds)
-{
-};
-
-
-Histogram8::~Histogram8() : ~Histogram()
 {
 };
 

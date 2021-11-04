@@ -41,7 +41,7 @@ void loop()
   Serial.print("\t");
   
   float sum = 0;
-  int i = 0;
+  uint16_t i = 0;
   for (i = 0; i < hist.size(); i++)
   {
     sum += hist.frequency(i);
