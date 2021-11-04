@@ -5,6 +5,7 @@ Histogram	KEYWORD1
 
 # Methods and Functions (KEYWORD2)
 clear	KEYWORD2
+setBucket	KEYWORD2
 add	KEYWORD2
 sub	KEYWORD2
 

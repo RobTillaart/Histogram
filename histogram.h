@@ -54,5 +54,28 @@ protected:
 };
 
 
+//////////////////////////////////////////////////////////////
+//
+// DERIVED CLASS
+//
+
+class Histogram16 : public Histogram
+{
+public:
+  Histogram16(const uint16_t length, float *bounds);
+protected:
+  int16_t * _data;
+};
+
+
+class Histogram8 : public Histogram
+{
+public:
+  Histogram8(const uint16_t length, float *bounds);
+protected:
+  int8_t * _data;
+};
+
+
 // -- END OF FILE --
 

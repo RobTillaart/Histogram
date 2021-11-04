@@ -260,5 +260,21 @@ uint16_t Histogram::countBelow(const int32_t level)
 }
 
 
+//////////////////////////////////////////////////////////////
+//
+// DERIVED CLASS
+//
+
+Histogram16::Histogram16(const uint16_t length, float *bounds) : Histogram(length, bounds)
+{
+};
+
+
+Histogram8::Histogram8(const uint16_t length, float *bounds) : Histogram(length, bounds)
+{
+};
+
+
+
 // -- END OF FILE --
 

@@ -48,6 +48,24 @@ The **frequency()** function may be removed to reduce footprint as it can be cal
 with the formula **(1.0 \* bucket(i))/count()**.
 
 
+#### experimental: Histogram8 Histogram16
+
+Histogram8 and Histogram16 are classes with same interface but smaller buckets. Histogram can count to ±2^31 while often ±2^15 or even ±2^7 is sufficient. Saves memory.
+
+| class name  | length | count/bucket | maxmem |
+|:------------|-------:|-------------:|-------:|
+| Histogram   | 65534  | ±2147483647  | 260 KB |
+| Histogram8  | 65534  | ±127         |  65 KB |
+| Histogram16 | 65534  | ±32767       | 130 KB |
+
+The difference is the **\_data** array, to reduce the memory footprint.
+
+Note: Maxmem is without the boundary array.
+
+Performance optimizations are possible too however not essential for 
+the experimental version.
+
+
 ## Interface 
 
 
@@ -111,26 +129,6 @@ See examples
 - bucket full / overflow warning. The **add()** **sub()** should 
 return a bool to indicate that a bucket is (almost) full.
 - 2D histograms ? e.g. positions on a grid.
-
-
-
-#### idea: Histogram8 Histogram 16
-
-Histogram8 and Histogram16 class with similar interface but smaller 
-number of buckets size etc. Current version can count up to ±2^31 while
-often ±2^15 or even ±2^7 is sufficient. Could safe substantial memory.
-
-| class name  | length | count/bucket | memory |
-|:------------|-------:|-------------:|-------:|
-| Histogram   | 32766  | ±2147483647  | 130 KB |
-| Histogram8  | 254    | ±127         | 260 B  |
-| Histogram16 | 254    | ±32767       | 520 B  |
-
-The essential difference would be the **\_data** array, to reduce 
-the memory footprint. So could be rather easy. 
-
-Performance optimizations are possible too however not essential for 
-the first versions I assume. 
 
 
 #### expensive ideas
