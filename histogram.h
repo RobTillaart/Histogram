@@ -16,39 +16,40 @@
 class Histogram
 {
 public:
-  Histogram(const int16_t length, float *bounds);
+  Histogram(const uint16_t length, float *bounds);
   ~Histogram();
 
   void  clear(int32_t value = 0);
-  void  setBucket(const int16_t index, int32_t value = 0) { _data[index] = value; };
+  void  setBucket(const uint16_t index, int32_t value = 0) { _data[index] = value; };
   void  add(const float value);
   void  sub(const float value);
 
   // number of buckets
-  inline int16_t size() { return _length; };
+  inline uint16_t size() { return _length; };
 
   // number of values added to all buckets
   inline uint32_t count() { return _count; };
 
   // number of values added to single bucket
-  int32_t  bucket(const int16_t index);
+  int32_t  bucket(const uint16_t index);
 
-  float    frequency(const int16_t index);
+  float    frequency(const uint16_t index);
   float    PMF(const float value);
   float    CDF(const float value);
   float    VAL(const float prob);
 
-  int16_t  find(const float value);
-  int16_t  findMin();
-  int16_t  findMax();
-  int16_t  countAbove(const uint32_t level);
-  int16_t  countBelow(const uint32_t level);
+  uint16_t find(const float value);
+  uint16_t findMin();
+  uint16_t findMax();
+  uint16_t countLevel(const int32_t level);
+  uint16_t countAbove(const int32_t level);
+  uint16_t countBelow(const int32_t level);
 
 
 protected:
   float *   _bounds;
   int32_t * _data;
-  int16_t   _length;
+  uint16_t  _length;
   uint32_t  _count;
 };
 

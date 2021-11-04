@@ -73,8 +73,9 @@ with the formula **(1.0 \* bucket(i))/count()**.
 - **int16_t find(float value)** returns the index of the bucket for value.
 - **int16_t findMin()** returns the (first) index of the bucket with the minimum value.
 - **int16_t findMax()** returns the (first) index of the bucket with the maximum value.
-- **int16_t countAbove(uint32_t level)** returns the number of buckets above level.
-- **int16_t countBelow(uint32_t level)** returns the number of buckets below level.
+- **int16_t countLevel(int32_t level)** returns the number of buckets with exact that level (count).
+- **int16_t countAbove(int32_t level)** returns the number of buckets above level.
+- **int16_t countBelow(int32_t level)** returns the number of buckets below level.
 
 
 ### Probability Distribution Functions
