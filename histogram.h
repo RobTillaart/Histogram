@@ -63,15 +63,20 @@ class Histogram16 : public Histogram
 {
 public:
   Histogram16(const uint16_t length, float *bounds);
+  ~Histogram16();
 protected:
   int16_t * _data;
 };
+
+
+//////////////////////////////////////////////////////////////
 
 
 class Histogram8 : public Histogram
 {
 public:
   Histogram8(const uint16_t length, float *bounds);
+  ~Histogram8();
 protected:
   int8_t * _data;
 };

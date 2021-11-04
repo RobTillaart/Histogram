@@ -2,6 +2,8 @@
 
 # Data types (KEYWORD1)
 Histogram	KEYWORD1
+Histogram8	KEYWORD1
+Histogram16	KEYWORD1
 
 # Methods and Functions (KEYWORD2)
 clear	KEYWORD2
