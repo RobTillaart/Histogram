@@ -1,7 +1,7 @@
 //
 //    FILE: Histogram.cpp
 //  AUTHOR: Rob Tillaart
-// VERSION: 0.3.3
+// VERSION: 0.4.0
 // PURPOSE: Histogram library for Arduino
 //    DATE: 2012-11-10
 
@@ -53,28 +53,27 @@ void Histogram::setBucket(const uint16_t index, int32_t value)
 
 
 //  adds a new value to the histogram - increasing
-void Histogram::add(const float value)
+bool Histogram::add(const float value)
 {
-  if (_length > 0)
-  {
-    uint16_t index = find(value);
-    _data[index]++;
-    _count++;
-  }
-  //  return index or count.
+  if (_length == 0) return false;
+  uint16_t index = find(value);
+  if (_data[index] == _maxBucket) return false;
+  _data[index]++;
+  _count++;
+  return true;
 }
 
 
 //  adds a new value to the histogram - decreasing
-void Histogram::sub(const float value)
+bool Histogram::sub(const float value)
 {
-  if (_length > 0)
-  {
-    uint16_t index = find(value);
-    _data[index]--;
-    _count++;
-  }
-  //  return index or count.
+  if (_length == 0) return false;
+  uint16_t index = find(value);
+  if (_data[index] == -_maxBucket) return false;
+  _data[index]--;
+  _count++;
+}
+//  return index or count.
 }
 
 
@@ -287,16 +286,55 @@ uint16_t Histogram::countBelow(const int32_t level)
 
 //////////////////////////////////////////////////////////////
 //
-//  DERIVED CLASS
+//  DERIVED CLASS - HISTOGRAM16
 //
-
 Histogram16::Histogram16(const uint16_t length, float *bounds) : Histogram(length, bounds)
 {
+  _bounds = bounds;
+  _length = length + 1;
+  _data = (int16_t *) malloc((_length) * sizeof(int16_t));
+  if (_data != NULL)
+  {
+    clear();
+  }
+  else
+  {
+    _length = 0;
+  }
+  _count = 0;
 }
 
 
+void Histogram16::setBucket(const uint16_t index, int32_t value)
+{
+  _data[index] = value;
+}
+
+
+//////////////////////////////////////////////////////////////
+//
+//  DERIVED CLASS - HISTOGRAM8
+//
 Histogram8::Histogram8(const uint16_t length, float *bounds) : Histogram(length, bounds)
 {
+  _bounds = bounds;
+  _length = length + 1;
+  _data = (int8_t *) malloc((_length) * sizeof(int8_t));
+  if (_data != NULL)
+  {
+    clear();
+  }
+  else
+  {
+    _length = 0;
+  }
+  _count = 0;
+}
+
+
+void Histogram8::setBucket(const uint16_t index, int32_t value)
+{
+  _data[index] = value;
 }
 
 
