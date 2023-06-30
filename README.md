@@ -164,6 +164,7 @@ See examples
 - performance - merge loops in **PMF()**
 - performance - reverse loops - compare to zero.
 
+
 #### Could
 
 - **saturation()** indication of the whole histogram
@@ -172,6 +173,7 @@ See examples
   - int32_t total() = 100%
   - **float getBucketPercent(idx)**
 - template class <bucketsizeType>.
+- **getMaxBucket()**? or just type (8,16,32)
 
 
 #### Wont
