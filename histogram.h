@@ -50,7 +50,7 @@ protected:
   int32_t * _data;
   uint16_t  _length;
   uint32_t  _count;
-  int32_t   _maxBucket = 2147483647;
+  int32_t   _maxBucket;
 };
 
 
@@ -68,7 +68,6 @@ public:
 
 protected:
   int16_t * _data;
-  int16_t   _maxBucket = 32767;
 };
 
 
@@ -82,7 +81,6 @@ public:
 
 protected:
   int8_t * _data;
-  int8_t   _maxBucket = 127;
 };
 
 

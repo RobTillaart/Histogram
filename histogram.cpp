@@ -23,6 +23,7 @@ Histogram::Histogram(const uint16_t length, float *bounds)
     _length = 0;
   }
   _count = 0;
+  _maxBucket = 2147483647;
 }
 
 
@@ -72,8 +73,7 @@ bool Histogram::sub(const float value)
   if (_data[index] == -_maxBucket) return false;
   _data[index]--;
   _count++;
-}
-//  return index or count.
+  return true;
 }
 
 
@@ -302,10 +302,17 @@ Histogram16::Histogram16(const uint16_t length, float *bounds) : Histogram(lengt
     _length = 0;
   }
   _count = 0;
+  _maxBucket = 32767;
 }
 
 
-void Histogram16::setBucket(const uint16_t index, int32_t value)
+Histogram16::~Histogram16()
+{
+  if (_data) free(_data);
+}
+
+
+void Histogram16::setBucket(const uint16_t index, int16_t value)
 {
   _data[index] = value;
 }
@@ -329,10 +336,17 @@ Histogram8::Histogram8(const uint16_t length, float *bounds) : Histogram(length,
     _length = 0;
   }
   _count = 0;
+  _maxBucket = 127;
 }
 
 
-void Histogram8::setBucket(const uint16_t index, int32_t value)
+Histogram8::~Histogram8()
+{
+  if (_data) free(_data);
+}
+
+
+void Histogram8::setBucket(const uint16_t index, int8_t value)
 {
   _data[index] = value;
 }

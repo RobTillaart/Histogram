@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [0.4.0] - 2023-06-30
-- change return type **bool add(value)** 
-- change return type **bool sub(value)**
+- change return type **bool add(value)**, add test maxint
+- change return type **bool sub(value)**, add test -maxint
 - made **setBucket()** virtual
 - update / cleanup readme.md
 
