@@ -10,7 +10,7 @@
 // boundaries does not need to be equally distributed.
 float b[100];
 
-Histogram hist(100, b);
+Histogram<uint32_t> hist(100, b);
 
 uint32_t lastTime = 0;
 const uint32_t threshold = 25;  // milliseconds, for updating display

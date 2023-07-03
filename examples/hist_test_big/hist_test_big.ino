@@ -11,7 +11,7 @@
 
 float b[200];   // MIGHT NOT WORK ON AVR !!
 
-Histogram hist(200, b);
+Histogram<uint16_t> hist(200, b);
 
 uint32_t lastTime = 0;
 const uint32_t threshold = 1000;  // milliseconds, for updating display

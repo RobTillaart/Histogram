@@ -10,7 +10,7 @@
 float b[] = {
   0, 300, 325, 350, 375, 400, 1000 };
 
-Histogram hist(7, b);
+Histogram<uint32_t> hist(7, b);
 
 
 void setup()

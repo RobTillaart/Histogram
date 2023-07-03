@@ -9,7 +9,7 @@
 
 float b[100];
 
-Histogram hist(100, b);
+Histogram<uint32_t> hist(100, b);
 
 uint32_t start, duration;
 uint32_t lastTime = 0;

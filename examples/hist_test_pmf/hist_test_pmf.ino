@@ -13,7 +13,7 @@ float b[] = {
   300, 350, 400, 450, 500, 
   600, 700, 800, 900, 1000 };
 
-Histogram hist(16, b);
+Histogram<uint32_t> hist(16, b);
 
 
 void setup()

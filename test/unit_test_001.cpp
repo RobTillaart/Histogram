@@ -43,7 +43,7 @@ unittest_teardown()
 unittest(test_constructor)
 {
   float diceValues[] = {0.5, 1.5, 2.5, 3.5, 4.5, 5.5 };
-  Histogram hist(6, diceValues);
+  Histogram<uint32_t> hist(6, diceValues);
   assertEqual(7, hist.size());
   assertEqual(0, hist.count());
 
@@ -58,7 +58,7 @@ unittest(test_constructor)
 unittest(test_dice)
 {
   float diceValues[] = { 0.5, 1.5, 2.5, 3.5, 4.5, 5.5 };
-  Histogram hist(6, diceValues);
+  Histogram<uint32_t> hist(6, diceValues);
   assertEqual(7, hist.size());
   assertEqual(0, hist.count());
 

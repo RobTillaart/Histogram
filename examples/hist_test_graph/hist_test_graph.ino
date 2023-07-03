@@ -11,7 +11,7 @@
 // boundaries array does not need to be equally distributed.
 float bounds[] = { 0, 100, 200, 300, 325, 350, 375, 400, 500, 600, 700, 800, 900, 1000 };
 
-Histogram hist(14, bounds);
+Histogram<uint16_t> hist(14, bounds);
 
 uint32_t lastTime = 0;
 const uint32_t threshold = 5000;  //  milliseconds, for updating display
