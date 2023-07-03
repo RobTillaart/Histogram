@@ -10,7 +10,7 @@
 // boundaries does not need to be equally distributed.
 float b[100];
 
-Histogram hist(100, b);
+Histogram<uint8_t> hist(100, b);
 
 uint32_t lastTime = 0;
 const uint32_t threshold = 25;  // milliseconds, for updating display
@@ -48,11 +48,28 @@ void setup()
   Serial.println();
 
   Serial.println("add 1000 random numbers");
+  delay(20);
+  start = micros();
   for (int i = 0; i < 1000; i++)
   {
     int x = random(1000);
     hist.add(x);
   }
+  stop = micros();
+  Serial.print("1000ADD: ");
+  Serial.println(stop - start);
+  Serial.println();
+  delay(20);
+
+  start = micros();
+  y = hist.PMF(500);
+  stop = micros();
+  Serial.print("    PMF: ");
+  Serial.println(y);
+  Serial.print("   TIME: ");
+  Serial.println(stop - start);
+  delay(20);
+
 
   start = micros();
   y = hist.CDF(500);
@@ -62,7 +79,7 @@ void setup()
   Serial.print("   TIME: ");
   Serial.println(stop - start);
   delay(20);
-  
+
 
   start = micros();
   y = hist.VAL(0.9);
@@ -71,28 +88,19 @@ void setup()
   Serial.println(y);
   Serial.print("   TIME: ");
   Serial.println(stop - start);
+  Serial.println();
   delay(20);
-  
+
 
   start = micros();
-  x = hist.findMax();
+  x = hist.findMin();
   stop = micros();
   Serial.print("FINDMIN: ");
   Serial.println(hist.findMin());
   Serial.print("   TIME: ");
   Serial.println(stop - start);
   delay(20);
-  
 
-  start = micros();
-  x = hist.findMax();
-  stop = micros();
-  Serial.print("FINDMIN: ");
-  Serial.println(hist.findMin());
-  Serial.print("   TIME: ");
-  Serial.println(stop - start);
-  delay(20);
-  
 
   start = micros();
   x = hist.findMax();
@@ -101,8 +109,9 @@ void setup()
   Serial.println(hist.findMax());
   Serial.print("   TIME: ");
   Serial.println(stop - start);
+  Serial.println();
   delay(20);
-  
+
 
   start = micros();
   x = hist.countBelow(0);
@@ -112,7 +121,7 @@ void setup()
   Serial.print("   TIME: ");
   Serial.println(stop - start);
   delay(20);
-  
+
   start = micros();
   x = hist.countLevel(0);
   stop = micros();
@@ -121,7 +130,7 @@ void setup()
   Serial.print("   TIME: ");
   Serial.println(stop - start);
   delay(20);
-  
+
   start = micros();
   x = hist.countAbove(0);
   stop = micros();

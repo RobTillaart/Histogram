@@ -13,7 +13,7 @@
 float b[] = {
   0, 100, 200, 300, 325, 350, 375 };
 
-Histogram hist(7, b);
+Histogram<int16_t> hist(7, b);
 
 uint32_t lastTime = 0;
 const uint32_t threshold = 25;  // milliseconds, for updating display
@@ -29,14 +29,14 @@ void setup()
   Serial.print("# buckets: ");
   Serial.println(hist.size());
 
-  for (uint16_t i = 0; i < hist.size()-1; i++)
+  for (uint16_t i = 0; i < hist.size() - 1; i++)
   {
     Serial.print("\t");
     Serial.print(b[i], 2);
   }
   Serial.println();
 
-  for (uint16_t i = 0; i < hist.size()-1; i++)
+  for (uint16_t i = 0; i < hist.size() - 1; i++)
   {
     Serial.print("\t");
     Serial.print(hist.find(b[i]));
@@ -59,7 +59,13 @@ void loop()
   //  Serial.print(x);
   //  Serial.print("\t");
   //  Serial.println(hist.find(x));
-  hist.add(x);
+  if (hist.add(x) == false)
+  {
+    Serial.print("ERR: \t");
+    Serial.print(x);
+    Serial.print("\t");
+    Serial.println(hist.find(x));
+  }
 
   // update output
   uint32_t now = millis();
@@ -71,8 +77,8 @@ void loop()
     {
       Serial.print("\t");
       // gives percentage per bucket
-      // Serial.print(hist.bucket(i));
-      Serial.print(hist.frequency(i), 2);
+      Serial.print(hist.bucket(i));
+      // Serial.print(hist.frequency(i), 2);
     }
     // quartiles
     // to get at least 25% of the values you must count all values < hist.VAL(0.25);
@@ -87,7 +93,7 @@ void loop()
     Serial.print(hist.VAL(1.0), 2);
     Serial.println();
 
-    if (hist.count() > 10000UL) hist.clear();
+    if (hist.count() > 1000000UL) hist.clear();
   }
 }
 

@@ -6,13 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [0.3.4] - 2023-06-30
+- change return type **bool add(value)**, add test maxint
+- change return type **bool sub(value)**, add test -maxint
+- made **setBucket()** virtual
+- update / cleanup readme.md
+- minor improve derived classes - still experimental
+
+
 ## [0.3.3] - 2023-02-21
 - optimize loops
 - update readme.md
 - update GitHub actions
 - update license 2023
 - minor edits
-
 
 ## [0.3.2] - 2022-11-09
 - add changelog.md

@@ -23,6 +23,18 @@ If you need more quantitative analysis, you might need the statistics library,
 - https://github.com/RobTillaart/Statistic
 
 
+#### Related
+
+- https://github.com/RobTillaart/Correlation
+- https://github.com/RobTillaart/GST - Golden standard test metrics
+- https://github.com/RobTillaart/Histogram
+- https://github.com/RobTillaart/RunningAngle
+- https://github.com/RobTillaart/RunningAverage
+- https://github.com/RobTillaart/RunningMedian
+- https://github.com/RobTillaart/statHelpers - combinations & permutations
+- https://github.com/RobTillaart/Statistic
+
+
 #### Working
 
 When the class is initialized an array of the boundaries to define the borders of the
@@ -90,8 +102,10 @@ Length should be less than 65534.
 
 - **void clear(float value = 0)** reset all bucket counters to value (default 0).
 - **void setBucket(const uint16_t index, int32_t value = 0)** store / overwrite a value of bucket.
-- **void add(float value)** add a value, increase count of bucket.
-- **void sub(float value)** 'add' a value, but decrease count (subtract).
+- **bool add(float value)** add a value, increase count of bucket.
+returns false if either length is zero, or bucket is full (+MAXINT).
+- **bool sub(float value)** 'add' a value, but decrease count (subtract).
+Returns false if either length is zero, or bucket is -full (-MAXINT).
 - **uint16_t size()** returns number of buckets.
 - **uint32_t count()** returns total number of values added (or subtracted).
 - **int32_t bucket(uint16_t index)** returns the count of single bucket, can be negative due to **sub()**
@@ -140,8 +154,6 @@ See examples
 #### Must
 
 - improve documentation
-  - explain **PMF()**, **CDF()** and **VAL()** functions.
-  - or a link to a good site?
 
 #### Should
 
@@ -152,33 +164,21 @@ See examples
 - performance - merge loops in **PMF()**
 - performance - reverse loops - compare to zero.
 
+
 #### Could
 
-- bucket full / overflow warning. 
-  - The **add()** **sub()** could return a bool to indicate that a bucket is (almost) full.
-  - return index ...
-  - keep track of max filled histogram.
-  - max value per bin
-  - saturation indication of the whole histogram
-- 2D histograms ? e.g. positions on a grid.
-  - see SparseMatrix
+- **saturation()** indication of the whole histogram
+  - count / nr of bins?
 - percentage readOut == frequency()
   - int32_t total() = 100%
-  - getBucketPercent(idx).. 
-- clear selected bins?
+  - **float getBucketPercent(idx)**
+- template class <bucketsizeType>.
+- **getMaxBucket()**? or just type (8, 16, 32)
+
 
 #### Wont
 
 - merge bins
-
-
-#### expensive ideas
-
-Expensive ideas in terms of memory or performance
-
-- Additional values per bucket.
-  - Sum, Min, Max, (average can be derived)
-- separate bucket-array for sub()
-- Copy the boundaries array?
-
+- 2D histograms ? e.g. positions on a grid.
+  - see SparseMatrix
 
