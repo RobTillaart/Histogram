@@ -87,7 +87,7 @@ the experimental version.
 #include "histogram.h"
 ```
 
-### Constructor
+#### Constructor
 
 - **Histogram(uint16_t length, float \*bounds)** constructor, get an array of boundary values and array length. 
 Length should be less than 65534.
@@ -98,21 +98,42 @@ Length should be less than 65534.
 - **~Histogram16()** destructor.
 
 
-### Base
+#### maxBucket
 
-- **void clear(float value = 0)** reset all bucket counters to value (default 0).
-- **void setBucket(const uint16_t index, int32_t value = 0)** store / overwrite a value of bucket.
-- **bool add(float value)** add a value, increase count of bucket.
-returns false if either length is zero, or bucket is full (+MAXINT).
-- **bool sub(float value)** 'add' a value, but decrease count (subtract).
-Returns false if either length is zero, or bucket is -full (-MAXINT).
+Default the maxBucket size is defined as 255 (8 bit), 65535 (16 bit) or
+2147483647(32 bit) depending on class used.
+These functions allow to set and get the maxBucket so the **add()** and
+**sub()** function will return full much faster. 
+
+- **getMaxBucket()**? or just type (8,16,32)
+- **setMaxBucket(value)** to have a user defined maxBucket level e.g 25
+
+
+#### Base
+
+- **uint8_t clear(float value = 0)** reset all bucket counters to value (default 0).
+Returns status, see below.
+- **uint8_t setBucket(const uint16_t index, int32_t value = 0)** store / overwrite a value of bucket.
+Returns status, see below.
+- **uint8_t add(float value)** add a value, increase count of bucket.
+Returns status, see below.
+- **uint8_t sub(float value)** 'add' a value, but decrease count (subtract).
+Returns status, see below.
 - **uint16_t size()** returns number of buckets.
 - **uint32_t count()** returns total number of values added (or subtracted).
 - **int32_t bucket(uint16_t index)** returns the count of single bucket, can be negative due to **sub()**
 - **float frequency(uint16_t index)** returns the relative frequency of a bucket, always between 0.0 and 1.0.
 
 
-### Helper functions
+|  Status            |  Value  | Description  |
+|:------------------:|:-------:|:------------:|
+|  HISTO_OK          |  0x00   |  all is well
+|  HISTO_FULL        |  0x01   |  add() / sub() caused bucket full ( + or - )
+|  HISTO_ERR_FULL    |  0xFF   |  cannot add() / sub(), overflow / underflow
+|  HISTO_ERR_LENGTH  |  0xFE   |  length = 0 error (constructor)
+
+
+#### Helper functions
 
 - **uint16_t find(float value)** returns the index of the bucket for value.
 - **uint16_t findMin()** returns the (first) index of the bucket with the minimum value.
@@ -122,7 +143,7 @@ Returns false if either length is zero, or bucket is -full (-MAXINT).
 - **uint16_t countBelow(int32_t level)** returns the number of buckets below level.
 
 
-### Probability Distribution Functions
+#### Probability Distribution Functions
 
 There are three functions:
 
@@ -141,11 +162,6 @@ Note **PDF()** is a continuous function and therefore not applicable in discrete
 
 - https://en.wikipedia.org/wiki/Probability_mass_function  PMF()
 - https://en.wikipedia.org/wiki/Cumulative_distribution_function CDF() + VAL()
-
-
-## Operation
-
-See examples
 
 
 ## Future
@@ -173,7 +189,6 @@ See examples
   - int32_t total() = 100%
   - **float getBucketPercent(idx)**
 - template class <bucketsizeType>.
-- **getMaxBucket()**? or just type (8,16,32)
 
 
 #### Wont
