@@ -197,6 +197,17 @@ float Histogram::VAL(const float probability)
 }
 
 
+int32_t Histogram::sum()
+{
+  int32_t _sum = 0;
+  for (uint16_t i = 0; i < _length; i++)
+  {
+    _sum += _data[i];
+  }
+  return _sum;
+}
+
+
 // returns the bucket number for value
 // - binary search, more memory ;  faster for #buckets > 20 ?
 // uint16_t Histogram::find(const float value)
