@@ -46,12 +46,13 @@ The values in the boundary array do not need to be equidistant (equal in size)
 but they need to be in ascending order.
 
 Internally the library does not record the individual values, only the count per bucket.
-If a new value is added - **add()** or **sub()** - the class checks in which bucket it 
+If a new value is added - **add(value)** - the class checks in which bucket it 
 belongs and the buckets counter is increased.
 
-The **sub()** function is used to decrease the count of a bucket and it can cause the 
-count to become below zero. Although seldom used but still depending on the application 
-it can be useful. E.g. when you want to compare two value generating streams, you let 
+The **sub(value)** function is used to decrease the count of a bucket and it can 
+cause the count to become below zero. 
+Although seldom used but still depending on the application it can be useful. 
+E.g. when you want to compare two value generating streams, you let 
 one stream **add()** and the other **sub()**. If the histogram of both streams is 
 similar they should cancel each other out (more or less), and the value of all buckets 
 should be around 0. \[not tried\].
@@ -101,13 +102,13 @@ Length should be less than 65534.
 #### maxBucket
 
 Default the maxBucket size is defined as 255 (8 bit), 65535 (16 bit) or
-2147483647(32 bit) depending on class used.
+2147483647 (32 bit) depending on class used.
 The functions below allow to set and get the maxBucket so the **add()** and
 **sub()** function will reach **FULL** faster.
-Useful in some applications e.g. games
+Useful in some applications e.g. games.
 
-- **uint32_t getMaxBucket()**? or just type (8,16,32)
-- **setMaxBucket(uint32_t value)** to have a user defined maxBucket level e.g 25
+- **void setMaxBucket(uint32_t value)** to have a user defined maxBucket level e.g 25
+- **uint32_t getMaxBucket()** returns the current maxBucket.
 
 Please note it makes no sense to set maxBucket to a value larger than
 the histogram type can handle. 
