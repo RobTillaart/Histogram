@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - change return type **uint8_t add(value)**, return status bucket
 - change return type **uint8_t sub(value)**, return status bucket
 - add **uint8_t status()** last known status.
+- add **int32_t sum()**, adds up all buckets.
 - made **setBucket()** virtual.
 - update / clean up readme.md
 - minor improvements derived classes - still experimental

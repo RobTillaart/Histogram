@@ -102,11 +102,17 @@ Length should be less than 65534.
 
 Default the maxBucket size is defined as 255 (8 bit), 65535 (16 bit) or
 2147483647(32 bit) depending on class used.
-These functions allow to set and get the maxBucket so the **add()** and
-**sub()** function will return full much faster. 
+The functions below allow to set and get the maxBucket so the **add()** and
+**sub()** function will reach **FULL** faster.
+Useful in some applications e.g. games
 
-- **getMaxBucket()**? or just type (8,16,32)
-- **setMaxBucket(value)** to have a user defined maxBucket level e.g 25
+- **uint32_t getMaxBucket()**? or just type (8,16,32)
+- **setMaxBucket(uint32_t value)** to have a user defined maxBucket level e.g 25
+
+Please note it makes no sense to set maxBucket to a value larger than
+the histogram type can handle. 
+Setting maxBucket to 300 for **Histogram8** will always fail as data can only 
+handle values between 0 .. 255.
 
 
 #### Base
@@ -117,12 +123,9 @@ Returns status, see below.
 Returns status, see below.
 - **uint8_t add(float value)** add a value, increase count of bucket.
 Returns status, see below.
-- **uint8_t sub(float value)** 'add' a value, but decrease count (subtract).
+- **uint8_t sub(float value)** 'add' a value, decrease (subtract) count of bucket.
+This is less used and has some side effects, see **frequency()**.
 Returns status, see below.
-- **uint16_t size()** returns number of buckets.
-- **uint32_t count()** returns total number of values added (or subtracted).
-- **int32_t bucket(uint16_t index)** returns the count of single bucket, can be negative due to **sub()**
-- **float frequency(uint16_t index)** returns the relative frequency of a bucket, always between 0.0 and 1.0.
 
 
 |  Status            |  Value  | Description  |
@@ -131,6 +134,19 @@ Returns status, see below.
 |  HISTO_FULL        |  0x01   |  add() / sub() caused bucket full ( + or - )
 |  HISTO_ERR_FULL    |  0xFF   |  cannot add() / sub(), overflow / underflow
 |  HISTO_ERR_LENGTH  |  0xFE   |  length = 0 error (constructor)
+
+
+- **uint16_t size()** returns number of buckets.
+- **uint32_t count()** returns total number of values added (or subtracted).
+- **int32_t bucket(uint16_t index)** returns the count of single bucket. 
+Can be negative if one uses **sub()**
+- **float frequency(uint16_t index)** returns the relative frequency of a bucket.
+This is always between -1.0 and 1.0.
+
+Some notes about **frequency()** 
+- can return a negative value if an application uses **sub()**
+- sum of all buckets will not add up to 1.0 if one uses **sub()**
+- value (and thus sum) will deviate if **HISTO_ERR_FULL** has occurred.
 
 
 #### Helper functions
@@ -145,7 +161,7 @@ Returns status, see below.
 
 #### Probability Distribution Functions
 
-There are three functions:
+There are three experimental functions:
 
 - **float PMF(float value)** Probability Mass Function. 
 Quite similar to **frequency()**, but uses a value as parameter.
@@ -153,15 +169,21 @@ Quite similar to **frequency()**, but uses a value as parameter.
 Returns the sum of frequencies <= value. Always between 0.0 and 1.0.
 - **float VAL(float probability)** Value Function, is **CDF()** inverted. 
 Returns the value of the original array for which the CDF is at least probability.
+- **int32_t sum()** returns the sum of all buckets. (not experimental).
+Just as with **frequency()** it is affected by the use of **sub()**,
+including returning a negative value.
 
-As the Arduino typical uses a small number of buckets these functions are quite 
-coarse and/or inaccurate (linear interpolation within bucket is still to be investigated)
+As most Arduino sketches typical uses a small number of buckets these functions 
+are quite coarse and/or inaccurate, so indicative at best.
+Linear interpolation within "last" bucket needs to be investigated, however it
+introduces its own uncertainty. Alternative is to add last box for 50%.
 
-Note **PDF()** is a continuous function and therefore not applicable in discrete histogram.
+Note **PDF()** is a continuous function and therefore not applicable in a discrete histogram.
 
 
 - https://en.wikipedia.org/wiki/Probability_mass_function  PMF()
 - https://en.wikipedia.org/wiki/Cumulative_distribution_function CDF() + VAL()
+- https://en.wikipedia.org/wiki/Probability_density_function  PDF()
 
 
 ## Future
@@ -174,8 +196,9 @@ Note **PDF()** is a continuous function and therefore not applicable in discrete
 #### Should
 
 - investigate performance - **find()** the right bucket. 
-  - Binary search is faster 
+  - Binary search is faster (above 20)
   - need testing.
+  - mixed search, last part (< 20) linear?
 - improve accuracy - linear interpolation for **PMF()**, **CDF()** and **VAL()**
 - performance - merge loops in **PMF()**
 - performance - reverse loops - compare to zero.
@@ -186,7 +209,6 @@ Note **PDF()** is a continuous function and therefore not applicable in discrete
 - **saturation()** indication of the whole histogram
   - count / nr of bins?
 - percentage readOut == frequency()
-  - int32_t total() = 100%
   - **float getBucketPercent(idx)**
 - template class <bucketsizeType>.
 

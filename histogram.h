@@ -44,6 +44,7 @@ public:
   float    PMF(const float value);
   float    CDF(const float value);
   float    VAL(const float probability);
+  int32_t  sum();
 
   uint16_t find(const float value);
   uint16_t findMin();
