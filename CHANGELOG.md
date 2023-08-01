@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [0.3.4] - 2023-06-30
-- change return type **bool add(value)**, add test maxint
-- change return type **bool sub(value)**, add test -maxint
-- made **setBucket()** virtual
-- update / cleanup readme.md
-- minor improve derived classes - still experimental
+- change return type **uint8_t clear()**, return status bucket
+- change return type **uint8_t setBucket(value)**, return status bucket
+- change return type **uint8_t add(value)**, return status bucket
+- change return type **uint8_t sub(value)**, return status bucket
+- add **uint8_t status()** last known status.
+- add **int32_t sum()**, adds up all buckets.
+- made **setBucket()** virtual.
+- update / clean up readme.md
+- minor improvements derived classes - still experimental
 
 
 ## [0.3.3] - 2023-02-21

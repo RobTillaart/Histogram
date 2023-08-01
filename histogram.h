@@ -30,6 +30,8 @@ public:
       _length = 0;
     }
     _count = 0;
+    _status = HISTO_OK;
+    _maxBucket = 2147483647;
   }
 
   ~Histogram()
@@ -40,45 +42,74 @@ public:
     }
   }
 
-  void clear(T value = 0)
+
+//  resets all counters to value (default 0)
+  uint8_t clear(T value = 0)
   {
     for (uint16_t i = 0; i < _length; i++)
     {
       _data[i] = value;
     }
     _count = 0;
+    _status = HISTO_OK;
+    if (value == _maxBucket) _status = HISTO_FULL;
+    return _status;
   }
 
-  bool add(const float value)
+
+  uint8_t add(const float value)
   {
-    if (_length == 0) return false;
+    if (_length == 0)
+    {
+      _status = HISTO_ERR_LENGTH;
+      return _status;
+    }
     uint16_t index = find(value);
-    //  detect overflow
-    T oldValue = _data[index];
-    //  volatile prevents faulty optimization of the comparison
-    volatile T newValue = oldValue + 1;
-    if (newValue < oldValue) return false;
+    if (_data[index] == _maxBucket)
+    {
+      _status = HISTO_ERR_FULL;
+      return _status;
+    }
     _data[index]++;
     _count++;
-    return true;
+    _status = HISTO_OK;
+    if (_data[index] == _maxBucket) _status = HISTO_FULL;
+    return _status;
   }
 
-  bool sub(const float value)
+
+  uint8_t sub(const float value)
   {
-    if (_length == 0) return false;
+    if (_length == 0)
+    {
+      _status = HISTO_ERR_LENGTH;
+      return _status;
+    }
     uint16_t index = find(value);
-    //  detect underflow
-    T oldValue = _data[index];
-    volatile T newValue = oldValue - 1;
-    if (newValue > oldValue) return false;
+    if (_data[index] == -_maxBucket)
+    {
+      _status = HISTO_ERR_FULL;
+      return _status;
+    }
     _data[index]--;
     _count++;
-    return true;
+    _status = HISTO_OK;
+    if (_data[index] == _maxBucket) _status = HISTO_FULL;
+    return _status;
   }
 
-  void setBucket(const uint16_t index, T value = 0)
+  uint8_t setBucket(const uint16_t index, T value = 0)
   {
     _data[index] = value;
+    _status = HISTO_OK;
+    if (value == _maxBucket) _status = HISTO_FULL;
+    return _status;
+  }
+
+
+  uint8_t  status()
+  {
+    return _status;
   }
 
   //  number of buckets
@@ -86,6 +117,7 @@ public:
   {
     return _length;
   }
+
 
   //  number of values added to all buckets
   uint32_t count()
@@ -107,6 +139,9 @@ public:
     return (1.0 * _data[index]) / _count;
   }
 
+
+  //  EXPERIMENTAL
+  //  returns the probability of the bucket of a value
   float PMF(const float value)
   {
     if ((_count == 0) || (_length == 0)) return NAN;
@@ -114,9 +149,14 @@ public:
     return (1.0 * _data[index]) / _count;
   }
 
+
+  //  EXPERIMENTAL
+  //  returns the cumulative probability of
+  //  values <= value
   float CDF(const float value)
   {
     if ((_count == 0) || (_length == 0)) return NAN;
+
     //  TODO: could be done in one loop?
     uint16_t index = find(value);
     int32_t  sum = 0;
@@ -127,6 +167,10 @@ public:
     return (1.0 * sum) / _count;
   }
 
+  //  EXPERIMENTAL
+  //  returns the value of the original array for
+  //  which the CDF is at least probability.
+  //  must start at 0.
   float VAL(const float probability)
   {
     if ((_count == 0) || (_length == 0)) return NAN;
@@ -147,6 +191,43 @@ public:
     }
     return INFINITY;
   }
+
+
+  int32_t sum()
+  {
+    int32_t _sum = 0;
+    for (uint16_t i = 0; i < _length; i++)
+    {
+      _sum += _data[i];
+    }
+    return _sum;
+  }
+
+
+// returns the bucket number for value
+// - binary search, more memory ;  faster for #buckets > 20 ?
+// uint16_t Histogram::find(const float value)
+// {
+  // if (_length <= 0) return -1;
+
+  // uint16_t low = 0, high = _length;
+  // uint16_t mid;
+  // while (high - low > 1)
+  // {
+    // mid = (low + high)/2;
+    // if (_bounds[mid] > value)
+    // {
+      // high = mid;
+    // }
+    // else
+    // {
+      // low = mid;
+    // }
+  // }
+  // if (_bounds[mid] > value) return mid;
+  // return _length - 1;
+// }
+
 
   uint16_t find(const float value)
   {
@@ -229,6 +310,20 @@ public:
     }
     return buckets;
   }
+
+
+  //  experimental use with care
+  int32_t getMaxBucket()
+  {
+    return _maxBucket;
+  }
+
+
+  void setMaxBucket(int32_t value)
+  {
+    _maxBucket = value;
+  }
+
 
 
 protected:
