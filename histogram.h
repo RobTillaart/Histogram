@@ -11,6 +11,12 @@
 
 #define HISTOGRAM_LIB_VERSION       (F("1.0.0"))
 
+//  return STATUS add(), sub(), clear(), setBucket();
+#define HISTO_OK                     0x00    //  idem
+#define HISTO_FULL                   0x01    //  just got full
+#define HISTO_ERR_FULL               0xFF    //  over- underflow
+#define HISTO_ERR_LENGTH             0xFE    //  constructor issue.
+
 
 template <typename T>
 class Histogram
@@ -327,10 +333,12 @@ public:
 
 
 protected:
-  T *       _data;
   float *   _bounds;
+  T *       _data;
   uint16_t  _length;
   uint32_t  _count;
+  int32_t   _maxBucket;
+  uint8_t   _status;
 };
 
 
