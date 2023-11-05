@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.3.5] - 2023-11-04
 - update readme.md
 - minor fix in changelog.md
+- update keywords.txt
 
 
 ## [0.3.4] - 2023-06-30
