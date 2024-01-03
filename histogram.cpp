@@ -329,6 +329,18 @@ uint16_t Histogram::countBelow(const int32_t level)
 }
 
 
+
+///////////////////////////////////////////////////
+//
+//  experimental
+//
+//  use with care
+float Histogram::saturation()
+{
+  return (1.0 * _count) / _length;
+}
+
+
 //  experimental use with care
 int32_t Histogram::getMaxBucket()
 {

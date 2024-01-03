@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ## [0.3.6] - 2024-01-03
+- add **float saturation()**
 - fix examples
 - minor edits
 

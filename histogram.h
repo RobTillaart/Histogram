@@ -60,6 +60,12 @@ public:
   uint16_t countBelow(const int32_t level);
 
 
+  ///////////////////////////////////////////////////
+  //
+  //  experimental
+  //
+  float    saturation();
+
   //  use with care
   int32_t  getMaxBucket();
   void     setMaxBucket(int32_t value);
