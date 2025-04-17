@@ -88,7 +88,7 @@ the experimental version.
 #include "histogram.h"
 ```
 
-#### Constructor
+### Constructor
 
 - **Histogram(uint16_t length, float \*bounds)** constructor, get an array of boundary values and array length. 
 Length should be less than 65534.
@@ -99,7 +99,7 @@ Length should be less than 65534.
 - **~Histogram16()** destructor.
 
 
-#### maxBucket
+### maxBucket
 
 Default the maxBucket size is defined as 255 (8 bit), 65535 (16 bit) or
 2147483647 (32 bit) depending on class used.
@@ -116,7 +116,7 @@ Setting maxBucket to 300 for **Histogram8** will always fail as data can only
 handle values between 0 .. 255.
 
 
-#### Base
+### Base
 
 - **uint8_t clear(float value = 0)** reset all bucket counters to value (default 0).
 Returns status, see below.
@@ -150,7 +150,7 @@ Some notes about **frequency()**
 - value (and thus sum) will deviate if **HISTO_ERR_FULL** has occurred.
 
 
-#### Helper functions
+### Helper functions
 
 - **uint16_t find(float value)** returns the index of the bucket for value.
 - **uint16_t findMin()** returns the (first) index of the bucket with the minimum value.
@@ -160,7 +160,7 @@ Some notes about **frequency()**
 - **uint16_t countBelow(int32_t level)** returns the number of buckets below level.
 
 
-#### Probability Distribution Functions
+### Probability Distribution Functions
 
 There are three experimental functions:
 
@@ -172,7 +172,7 @@ Returns the sum of frequencies <= value. Always between 0.0 and 1.0.
 Returns the value of the original array for which the CDF is at least probability.
 - **int32_t sum()** returns the sum of all buckets. (not experimental).
 Just as with **frequency()** it is affected by the use of **sub()**,
-including returning a negative value.                                                                     
+including returning a negative value.
 
 As most Arduino sketches typical uses a small number of buckets these functions 
 are quite coarse and/or inaccurate, so indicative at best.
