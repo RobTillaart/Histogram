@@ -3,7 +3,7 @@
 //    FILE: Histogram.h
 //  AUTHOR: Rob Tillaart
 //    DATE: 2012-11-10
-// VERSION: 0.3.8
+// VERSION: 0.4.0
 // PURPOSE: Histogram library for Arduino
 //     URL: https://github.com/RobTillaart/Histogram
 
@@ -11,7 +11,7 @@
 #include "Arduino.h"
 
 
-#define HISTOGRAM_LIB_VERSION       (F("0.3.8"))
+#define HISTOGRAM_LIB_VERSION       (F("0.4.0"))
 
 //  return STATUS add(), sub(), clear(), setBucket();
 #define HISTO_OK                     0x00    //  idem
@@ -62,11 +62,10 @@ public:
 
   ///////////////////////////////////////////////////
   //
-  //  experimental
+  //  Experimental
+  //  use with care
   //
   float    saturation();
-
-  //  use with care
   int32_t  getMaxBucket();
   void     setMaxBucket(int32_t value);
   int32_t  getMinBucket();

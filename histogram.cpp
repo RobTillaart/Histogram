@@ -430,7 +430,7 @@ Histogram8::Histogram8(const uint16_t length, float *bounds) : Histogram(length,
 {
   _bounds = bounds;
   _length = length + 1;
-  _count = 0;
+  _count  = 0;
   _status = HISTO_OK;
   _maxBucket = 127;
   _minBucket = -127;

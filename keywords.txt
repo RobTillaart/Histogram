@@ -35,6 +35,8 @@ countBelow	KEYWORD2
 saturation	KEYWORD2
 getMaxBucket	KEYWORD2
 setMaxBucket	KEYWORD2
+getMinBucket	KEYWORD2
+setMinBucket	KEYWORD2
 
 
 # Constants (LITERAL1)
