@@ -26,7 +26,9 @@ If you need more quantitative analysis, you might need the statistics library,
 - https://github.com/RobTillaart/Statistic
 
 
-#### Related
+### Related
+
+Statistic related libraries
 
 - https://github.com/RobTillaart/Correlation
 - https://github.com/RobTillaart/GST - Golden standard test metrics
@@ -37,9 +39,11 @@ If you need more quantitative analysis, you might need the statistics library,
 - https://github.com/RobTillaart/RunningMedian
 - https://github.com/RobTillaart/statHelpers - combinations & permutations
 - https://github.com/RobTillaart/Statistic
+- https://github.com/RobTillaart/Student
+- https://github.com/RobTillaart/PrintHelpers - print values in scientific / engineering format.
 
 
-#### Working
+### Working
 
 When the class is initialized an array of the boundaries to define the borders of the
 buckets is passed to the constructor. This array should be declared global as the
@@ -65,7 +69,7 @@ The **frequency()** function may be removed to reduce footprint as it can be cal
 with the formula **(1.0 \* bucket(i))/count()**.
 
 
-#### Experimental: Histogram8 Histogram16
+### Experimental: Histogram8 Histogram16
 
 Histogram8 and Histogram16 are derived classes with same interface but smaller buckets. 
 Histogram can count to ± 2^31 while often ± 2^15 or even ± 2^7 is sufficient. 
@@ -92,7 +96,7 @@ the experimental version.
 #include "histogram.h"
 ```
 
-#### Constructor
+### Constructor
 
 - **Histogram(uint16_t length, float \*bounds)** constructor, get an array of boundary values and array length. 
 Length should be less than 65534.
@@ -103,16 +107,18 @@ Length should be less than 65534.
 - **~Histogram16()** destructor.
 
 
-#### MaxBucket
+### MaxBucket
 
 Default the maxBucket size is defined as 255 (8 bit), 65535 (16 bit) or
 2147483647 (32 bit) depending on class used.
-The functions below allow to set and get the maxBucket so the **add()** and
-**sub()** function will reach **FULL** faster.
+The functions below allow to set and get the maxBucket and minBucket so 
+the **add()** and **sub()** function will reach **FULL** faster.
 Useful in some applications e.g. games.
 
 - **void setMaxBucket(uint32_t value)** to have a user defined maxBucket level e.g 25
 - **uint32_t getMaxBucket()** returns the current maxBucket.
+- **void setMinBucket(uint32_t value)** to have a user defined minBucket level e.g -50
+- **uint32_t getMinBucket()** returns the current minBucket.
 
 Please note it makes no sense to set maxBucket to a value larger than
 the histogram type can handle. 
@@ -120,7 +126,7 @@ Setting maxBucket to 300 for **Histogram8** will always fail as data can only
 handle values between 0 .. 255.
 
 
-#### Base
+### Base
 
 - **uint8_t clear(float value = 0)** reset all bucket counters to value (default 0).
 Returns status, see below.
@@ -154,7 +160,7 @@ Some notes about **frequency()**
 - value (and thus sum) will deviate if **HISTO_ERR_FULL** has occurred.
 
 
-#### Helper functions
+### Helper functions
 
 - **uint16_t find(float value)** returns the index of the bucket for value.
 - **uint16_t findMin()** returns the (first) index of the bucket with the minimum value.
@@ -164,7 +170,7 @@ Some notes about **frequency()**
 - **uint16_t countBelow(int32_t level)** returns the number of buckets below level.
 
 
-#### Probability Distribution Functions
+### Probability Distribution Functions
 
 There are three experimental functions:
 
@@ -191,11 +197,11 @@ Note **PDF()** is a continuous function and therefore not applicable in a discre
 - https://en.wikipedia.org/wiki/Probability_density_function  PDF()
 
 
-#### Experimental
+### Experimental
 
 An additional helper function.
 
-- **float saturation()** returns the **count()** / nr of bins.
+- **float saturation()** returns the **count()** / **nr of bins**.
 Is an indicator of how "filled" the histogram is.
 
 Might need to calculate the average level.
@@ -219,12 +225,11 @@ Note: **findMax()** gives an indication for the topmost individual bucket.
 - improve accuracy - linear interpolation for **PMF()**, **CDF()** and **VAL()**
 - performance - merge loops in **PMF()**
 - performance - reverse loops - compare to zero.
+- HISTO_ERR_RANGE? iso ERR_FULL
 
 
 #### Could
 
-- **saturation()** indication of the whole histogram
-  - count / nr of bins?
 - percentage readOut == frequency()
   - **float getBucketPercent(idx)**
 - template class <bucketsizeType>.
