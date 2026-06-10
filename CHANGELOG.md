@@ -6,6 +6,40 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## [0.4.1] - 2026-06-10
+- update Readme.md
+- remove DATE: field from examples (not informative)
+- remove Experimental (no new issues for 9 months)
+- update GitHub actions
+- minor edits.
+
+## [0.4.0] - 2025-09-30
+- fix **SetBucket()** overflow
+- add **get/setMinBucket()** and add to functions.
+- catch length div zero in **saturation()**
+- update GitHub actions
+- fix **HISTOGRAM_LIB_VERSION**
+- update / add examples **hist_test_plotter**
+- fix keywords.txt
+- minor edits
+
+----
+
+## [0.3.7] - 2024-05-25
+- add examples **hist_pointer.ino** and **hist_array.ino**
+- issue #10 spin off library https://github.com/RobTillaart/Kurtosis
+- minor edits
+
+## [0.3.6] - 2024-01-03
+- add **float saturation()**
+- fix examples
+- minor edits
+
+## [0.3.5] - 2023-11-04
+- update readme.md
+- minor fix in changelog.md
+- update keywords.txt
+
 ## [0.3.4] - 2023-06-30
 - change return type **uint8_t clear()**, return status bucket
 - change return type **uint8_t setBucket(value)**, return status bucket
@@ -16,7 +50,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - made **setBucket()** virtual.
 - update / clean up readme.md
 - minor improvements derived classes - still experimental
-
 
 ## [0.3.3] - 2023-02-21
 - optimize loops
@@ -29,8 +62,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - add changelog.md
 - add rp2040 to build-CI
 - update readme.md
-
-## [0.3.2] - 2022-07-27
 - clean-up code
 - update documentation
 

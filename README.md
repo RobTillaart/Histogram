@@ -2,8 +2,11 @@
 [![Arduino CI](https://github.com/RobTillaart/Histogram/workflows/Arduino%20CI/badge.svg)](https://github.com/marketplace/actions/arduino_ci)
 [![Arduino-lint](https://github.com/RobTillaart/Histogram/actions/workflows/arduino-lint.yml/badge.svg)](https://github.com/RobTillaart/Histogram/actions/workflows/arduino-lint.yml)
 [![JSON check](https://github.com/RobTillaart/Histogram/actions/workflows/jsoncheck.yml/badge.svg)](https://github.com/RobTillaart/Histogram/actions/workflows/jsoncheck.yml)
+[![GitHub issues](https://img.shields.io/github/issues/RobTillaart/Histogram.svg)](https://github.com/RobTillaart/Histogram/issues)
+
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/RobTillaart/Histogram/blob/master/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/RobTillaart/Histogram.svg?maxAge=3600)](https://github.com/RobTillaart/Histogram/releases)
+[![PlatformIO Registry](https://badges.registry.platformio.org/packages/robtillaart/library/Histogram.svg)](https://registry.platformio.org/libraries/robtillaart/Histogram)
 
 
 # Histogram
@@ -18,24 +21,40 @@ We often want to make a histogram of this data to get insight of the distributio
 measurements. This is where this Histogram library comes in.
 
 The Histogram distributes the values added to it into buckets and keeps count per bucket.
+The borders of the buckets do not need to be equidistant so one has a lot of freedom to 
+classify. E.g. all temperatures between -273..0 in one bucket and the rest per 5°C. 
 
 If you need more quantitative analysis, you might need the statistics library, 
 - https://github.com/RobTillaart/Statistic
 
+Feedback as always is welcome.
 
-#### Related
+
+### Related
+
+Statistic related libraries
 
 - https://github.com/RobTillaart/Correlation
 - https://github.com/RobTillaart/GST - Golden standard test metrics
 - https://github.com/RobTillaart/Histogram
+- https://github.com/RobTillaart/Kurtosis
+- https://github.com/RobTillaart/Poisson
 - https://github.com/RobTillaart/RunningAngle
 - https://github.com/RobTillaart/RunningAverage
 - https://github.com/RobTillaart/RunningMedian
 - https://github.com/RobTillaart/statHelpers - combinations & permutations
 - https://github.com/RobTillaart/Statistic
+- https://github.com/RobTillaart/Student
+- https://github.com/RobTillaart/PrintHelpers - print values in scientific / engineering format.
+
+Some backgrounders
+
+- https://en.wikipedia.org/wiki/Probability_mass_function  PMF()
+- https://en.wikipedia.org/wiki/Cumulative_distribution_function CDF() + VAL()
+- https://en.wikipedia.org/wiki/Probability_density_function  PDF()
 
 
-#### Working
+### Working
 
 When the class is initialized an array of the boundaries to define the borders of the
 buckets is passed to the constructor. This array should be declared global as the
@@ -50,18 +69,15 @@ If a new value is added - **add(value)** - the class checks in which bucket it
 belongs and the buckets counter is increased.
 
 The **sub(value)** function is used to decrease the count of a bucket and it can 
-cause the count to become below zero.
+cause the count to become below zero. 
 Although seldom used but still depending on the application it can be useful. 
 E.g. when you want to compare two value generating streams, you let 
 one stream **add()** and the other **sub()**. If the histogram of both streams is 
 similar they should cancel each other out (more or less), and the value of all buckets 
 should be around 0. \[not tried\].
 
-The **frequency()** function may be removed to reduce footprint as it can be calculated 
-with the formula **(1.0 \* bucket(i))/count()**.
 
-
-#### Experimental: Histogram8 Histogram16
+### Histogram8 Histogram16
 
 Histogram8 and Histogram16 are derived classes with same interface but smaller buckets. 
 Histogram can count to ± 2^31 while often ± 2^15 or even ± 2^7 is sufficient. 
@@ -79,7 +95,12 @@ The difference is the **\_data** array, to reduce the memory footprint.
 Note: max memory is without the boundary array.
 
 Performance optimizations are possible too however not essential for 
-the experimental version.
+the current version.
+
+
+## Special characters
+
+Alt 0177 = ±  
 
 
 ## Interface 
@@ -99,16 +120,23 @@ Length should be less than 65534.
 - **~Histogram16()** destructor.
 
 
-### maxBucket
+### MaxBucket
 
-Default the maxBucket size is defined as 255 (8 bit), 65535 (16 bit) or
-2147483647 (32 bit) depending on class used.
-The functions below allow to set and get the maxBucket so the **add()** and
-**sub()** function will reach **FULL** faster.
+Default the minBucket and maxBucket size is defined as ±255 (8 bit), ±65535 (16 bit) or
+±2147483647 (32 bit) depending on class used.
+The functions below allow to set and get the maxBucket and minBucket so 
+the **add()** and **sub()** function will reach **FULL** faster.
 Useful in some applications e.g. games.
+
+Note: the minBucket can be different from maxBucket so it defines a range e.g. -40..100,
+or 0..999 etc.
+
+Note: The levels are set for all buckets, it is not possible to set levels per bucket.
 
 - **void setMaxBucket(uint32_t value)** to have a user defined maxBucket level e.g 25
 - **uint32_t getMaxBucket()** returns the current maxBucket.
+- **void setMinBucket(uint32_t value)** to have a user defined minBucket level e.g -50
+- **uint32_t getMinBucket()** returns the current minBucket.
 
 Please note it makes no sense to set maxBucket to a value larger than
 the histogram type can handle. 
@@ -118,13 +146,13 @@ handle values between 0 .. 255.
 
 ### Base
 
-- **uint8_t clear(float value = 0)** reset all bucket counters to value (default 0).
+- **uint8_t clear(float bucketCount = 0)** reset all bucket counters to bucketCount (default 0).
 Returns status, see below.
-- **uint8_t setBucket(const uint16_t index, int32_t value = 0)** store / overwrite a value of bucket.
+- **uint8_t setBucket(const uint16_t index, int32_t bucketCount = 0)** store / overwrite a bucketCount of bucket.
 Returns status, see below.
-- **uint8_t add(float value)** add a value, increase count of bucket.
+- **uint8_t add(float value)** add a value, increase count of bucket by one.
 Returns status, see below.
-- **uint8_t sub(float value)** 'add' a value, decrease (subtract) count of bucket.
+- **uint8_t sub(float value)** 'add' a value, decrease (subtract) count of bucket by one.
 This is less used and has some side effects, see **frequency()**.
 Returns status, see below.
 
@@ -134,12 +162,12 @@ Returns status, see below.
 |  HISTO_OK          |  0x00   |  all is well
 |  HISTO_FULL        |  0x01   |  add() / sub() caused bucket full ( + or - )
 |  HISTO_ERR_FULL    |  0xFF   |  cannot add() / sub(), overflow / underflow
-|  HISTO_ERR_LENGTH  |  0xFE   |  length = 0 error (constructor)
+|  HISTO_ERR_LENGTH  |  0xFE   |  length == 0 error (constructor)
 
 
 - **uint16_t size()** returns number of buckets.
 - **uint32_t count()** returns total number of values added (or subtracted).
-- **int32_t bucket(uint16_t index)** returns the count of single bucket.
+- **int32_t bucket(uint16_t index)** returns the count of single bucket. 
 Can be negative if one uses **sub()**
 - **float frequency(uint16_t index)** returns the relative frequency of a bucket.
 This is always between -1.0 and 1.0.
@@ -162,7 +190,7 @@ Some notes about **frequency()**
 
 ### Probability Distribution Functions
 
-There are three experimental functions:
+There are three functions:
 
 - **float PMF(float value)** Probability Mass Function. 
 Quite similar to **frequency()**, but uses a value as parameter.
@@ -170,21 +198,32 @@ Quite similar to **frequency()**, but uses a value as parameter.
 Returns the sum of frequencies <= value. Always between 0.0 and 1.0.
 - **float VAL(float probability)** Value Function, is **CDF()** inverted. 
 Returns the value of the original array for which the CDF is at least probability.
-- **int32_t sum()** returns the sum of all buckets. (not experimental).
+- **int32_t sum()** returns the sum of all buckets.
 Just as with **frequency()** it is affected by the use of **sub()**,
-including returning a negative value.
+including possibly returning a negative value.
 
-As most Arduino sketches typical uses a small number of buckets these functions 
+As most Arduino sketches typical uses a small number of buckets, so the above three functions 
 are quite coarse and/or inaccurate, so indicative at best.
 Linear interpolation within "last" bucket needs to be investigated, however it
 introduces its own uncertainty. Alternative is to add last box for 50%.
 
 Note **PDF()** is a continuous function and therefore not applicable in a discrete histogram.
 
-
 - https://en.wikipedia.org/wiki/Probability_mass_function  PMF()
 - https://en.wikipedia.org/wiki/Cumulative_distribution_function CDF() + VAL()
 - https://en.wikipedia.org/wiki/Probability_density_function  PDF()
+
+
+### Saturation
+
+- **float saturation()** returns the **count()** / **number of bins**.
+This is an indicator of how far the histogram is filled on average.
+
+More informative might be the **uint16_t findMax()** function that gives an 
+indication of the "filling" of the topmost individual bucket compared to
+the maximum count per bucket.
+
+In code ``` S = Hist.findMax() / getMaxBucket()```
 
 
 ## Future
@@ -197,26 +236,30 @@ Note **PDF()** is a continuous function and therefore not applicable in a discre
 #### Should
 
 - investigate performance - **find()** the right bucket. 
- - Binary search is faster (above 20)
+  - Binary search is faster (above 20 buckets)
   - need testing.
-  - mixed search, last part (< 20) linear?
+  - mixed search, last part (< 20 buckets) linear?
 - improve accuracy - linear interpolation for **PMF()**, **CDF()** and **VAL()**
-- performance - merge loops in **PMF()**
-- performance - reverse loops - compare to zero.
-
 
 #### Could
 
-- **saturation()** indication of the whole histogram
-  - count / nr of bins?
-- percentage readOut == frequency()
-  - **float getBucketPercent(idx)**
-- template class <bucketsizeType>.
-
+- template class <bucketsizeType>
+- extend error handling
+  - HISTO_ERR_RANGE? iso ERR_FULL
 
 #### Wont
 
 - merge bins
 - 2D histograms ? e.g. positions on a grid.
   - see SparseMatrix
+
+
+## Support
+
+If you appreciate my libraries, you can support the development and maintenance.
+Improve the quality of the libraries by providing issues and Pull Requests, or
+donate through PayPal or GitHub sponsors.
+
+Thank you,
+
 

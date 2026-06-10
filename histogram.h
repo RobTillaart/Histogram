@@ -3,8 +3,9 @@
 //    FILE: Histogram.h
 //  AUTHOR: Rob Tillaart
 // VERSION: 1.0.0
-// PURPOSE: Histogram library for Arduino
 //    DATE: 2012-11-10
+// PURPOSE: Arduino library for creating histograms
+//     URL: https://github.com/RobTillaart/Histogram
 
 
 #include "Arduino.h"
@@ -146,7 +147,6 @@ public:
   }
 
 
-  //  EXPERIMENTAL
   //  returns the probability of the bucket of a value
   float PMF(const float value)
   {
@@ -156,7 +156,6 @@ public:
   }
 
 
-  //  EXPERIMENTAL
   //  returns the cumulative probability of
   //  values <= value
   float CDF(const float value)
@@ -173,7 +172,6 @@ public:
     return (1.0 * sum) / _count;
   }
 
-  //  EXPERIMENTAL
   //  returns the value of the original array for
   //  which the CDF is at least probability.
   //  must start at 0.
@@ -338,6 +336,7 @@ protected:
   uint16_t  _length;
   uint32_t  _count;
   int32_t   _maxBucket;
+  int32_t   _minBucket;
   uint8_t   _status;
 };
 

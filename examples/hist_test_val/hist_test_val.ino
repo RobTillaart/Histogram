@@ -1,16 +1,18 @@
 //
 //    FILE: hist_test_val.ino
 //  AUTHOR: Rob Tillaart
-//    DATE: 2012-11-11
-// PUPROSE: test histogram library
+// PURPOSE: test histogram library
+//     URL: https://github.com/RobTillaart/Histogram
 
 
 #include "histogram.h"
 
-float b[] = { 
-  0, 50, 100, 150, 200, 250, 
-  300, 350, 400, 450, 500, 
-  600, 700, 800, 900, 1000 };
+
+float b[] = {
+  0, 50, 100, 150, 200, 250,
+  300, 350, 400, 450, 500,
+  600, 700, 800, 900, 1000
+};
 
 Histogram<uint32_t> hist(16, b);
 
@@ -18,9 +20,11 @@ Histogram<uint32_t> hist(16, b);
 void setup()
 {
   Serial.begin(115200);
-  Serial.println("\ntest VAL");
-  Serial.print("Histogram version: ");
+  Serial.println();
+  Serial.println(__FILE__);
+  Serial.print(F("HISTOGRAM_LIB_VERSION: "));
   Serial.println(HISTOGRAM_LIB_VERSION);
+  Serial.println();
 }
 
 
@@ -50,11 +54,14 @@ void loop()
   Serial.print(b[i]);
   Serial.println();
 
-  if (hist.count() > 1000) hist.clear();
+  if (hist.count() > 1000)
+  {
+    hist.clear();
+  }
 
   delay(10);
 }
 
 
-// -- END OF FILE --
+//  -- END OF FILE --
 
